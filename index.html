@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Пять замков</title>
+<meta name="description" content="Пять замков: тактическая игра на двоих. Тайно раздели 50 воинов между пятью замками, укрепляй их башнями и перехитри друга.">
+<meta property="og:title" content="Пять замков">
+<meta property="og:description" content="Сыграем? Тайно раздели 50 воинов между пятью замками и перехитри друга.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="preview.jpg">
+<meta name="theme-color" content="#120E18">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23241A30'/%3E%3Cpath d='M13 54V26h7v6h6v-6h12v6h6v-6h7v28H39V42a7 7 0 0 0-14 0v12z' fill='%23F2C451'/%3E%3Cpath d='M31 9h11l-4 4 4 4H33v9h-2z' fill='%2374DAB4'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="view"></div>
+<div id="labels" aria-hidden="true"></div>
+<header id="hud" hidden>
+  <div class="side p1 panel" id="side1"><span class="sw"></span><i class="pres" id="pres1" hidden></i><span class="who"><span class="nm" id="nm1">Долина</span><span class="tag" id="tag1">Синие · вы</span></span><span class="stats"><span class="stat glory" title="Слава"><svg class="ic"><use href="#i-crown"/></svg><b id="glory1">0</b></span><span class="stat gold" title="Золото"><svg class="ic"><use href="#i-coin"/></svg><b id="gold1">0</b></span></span></div>
+  <div class="round panel"><span class="k">Раунд</span><span class="n"><span id="roundN">1</span><small> / <span id="roundsN">7</span></small></span></div>
+  <div class="side p2 panel" id="side2"><span class="sw"></span><i class="pres" id="pres2" hidden></i><span class="who"><span class="nm" id="nm2">Порча</span><span class="tag" id="tag2">Фиолетовые · бот</span></span><span class="stats"><span class="stat glory" title="Слава"><svg class="ic"><use href="#i-crown"/></svg><b id="glory2">0</b></span><span class="stat gold" title="Золото"><svg class="ic"><use href="#i-coin"/></svg><b id="gold2">0</b></span></span></div>
+</header>
+<div id="tools" hidden>
+  <button class="ibtn panel" id="btnRules" aria-label="Правила" title="Правила"><svg class="ic"><use href="#i-help"/></svg></button>
+  <button class="ibtn panel" id="btnCam" aria-label="Вернуть камеру" title="Вернуть камеру (C)"><svg class="ic"><use href="#i-cam"/></svg></button>
+  <button class="ibtn panel" id="btnMenu" aria-label="Меню" title="Меню"><svg class="ic"><use href="#i-menu"/></svg></button>
+</div>
+<section id="plan" class="panel" hidden>
+  <div class="planHead">
+    <div class="ttl"><div class="krow"><span class="kick" id="planKick">Тайный приказ</span><span class="fchip" id="fchip" hidden><i class="pres"></i><span></span></span></div><h2 id="planTitle">Раздели 50 воинов между замками</h2></div>
+    <div class="pool" id="pool"><b id="poolLeft">50</b><span>в резерве</span></div>
+    <div class="quick"><button class="qb" id="qEven">Поровну</button><button class="qb" id="qRepeat"><span class="lg">Как в прошлый раз</span><span class="sm">Повторить</span></button><button class="qb" id="qClear">Сбросить</button></div>
+  </div>
+  <div id="cards"></div>
+  <div class="planFoot">
+    <div class="hint" id="planHint"></div>
+    <button class="go" id="btnGo"><svg class="ic"><use href="#i-swords"/></svg><span id="goText">В бой</span></button>
+  </div>
+</section>
+<div id="battleBar" class="panel" hidden><span id="battleText">Войска выступили</span><button class="qb" id="btnFast" title="Ускорить">×2</button><button class="qb" id="btnSkip">Пропустить</button></div>
+<div id="waitBar" class="panel" hidden><span class="spin"></span><span id="waitText"></span></div>
+<div id="modal" hidden><div class="sheet panel" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div id="cover" hidden><div class="in"><div class="crest" id="coverCrest"><svg class="ic"><use href="#i-shield"/></svg></div><h2 id="coverTitle">Ход Порчи</h2><p id="coverText">Передай устройство второму игроку.</p><button class="go" id="coverGo">Я готов</button></div></div>
+<div id="toasts" aria-live="polite"></div>
+<div id="netToast" class="panel" hidden><span class="spin"></span>Нет связи с сервером. Переподключаемся…</div>
+<div id="loading" class="panel">Собираю долину…</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-crown" viewBox="0 0 24 24"><path fill="currentColor" d="M3 8.5l4.2 3.3L12 5l4.8 6.8L21 8.5l-1.6 9.2a1.6 1.6 0 0 1-1.6 1.3H6.2a1.6 1.6 0 0 1-1.6-1.3L3 8.5z"/><circle cx="12" cy="4" r="1.6" fill="currentColor"/><circle cx="3" cy="7.6" r="1.4" fill="currentColor"/><circle cx="21" cy="7.6" r="1.4" fill="currentColor"/></symbol>
+  <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="currentColor"/><circle cx="12" cy="12" r="6.2" fill="none" stroke="#6B4A12" stroke-opacity="0.45" stroke-width="1.6"/><path d="M12 8.2v7.6M9.6 10.2h4.8" stroke="#6B4A12" stroke-opacity="0.55" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-tower" viewBox="0 0 24 24"><path fill="currentColor" d="M5 3h3v2h2.5V3h3v2H16V3h3v6l-2 2v10H7V11L5 9V3zm5.5 11v7h3v-7a1.5 1.5 0 0 0-3 0z"/></symbol>
+  <symbol id="i-swords" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M4 4l10.5 10.5M4 4h4l9 9M4 4v4l9 9M14 17l3 3M17 14l3 3M20 4L9.5 14.5M20 4h-4M20 4v4M7 17l-3 3M10 20l-3-3"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l8 3v6.4c0 5-3.4 9.1-8 10.6-4.6-1.5-8-5.6-8-10.6V5l8-3z"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.4 9.3a2.7 2.7 0 1 1 3.8 2.5c-.8.4-1.2 1-1.2 1.8v.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17.2" r="1.25" fill="currentColor"/></symbol>
+  <symbol id="i-cam" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M5 7h14M5 12h14M5 17h14"/></symbol>
+  <symbol id="i-hammer" viewBox="0 0 24 24"><path fill="currentColor" d="M14.6 3.2l6.2 6.2-2.3 2.3-1.6-1.6-1.4 1.4-2.3-2.3L4.6 17.8a1.9 1.9 0 0 1-2.7-2.7l8.6-8.6-1-1 2.3-2.3h2.8z"/></symbol>
+</svg>
+<script src="lib/three.min.js"></script>
+<script src="lib/three-post/CopyShader.js"></script>
+<script src="lib/three-post/LuminosityHighPassShader.js"></script>
+<script src="lib/three-post/EffectComposer.js"></script>
+<script src="lib/three-post/RenderPass.js"></script>
+<script src="lib/three-post/ShaderPass.js"></script>
+<script src="lib/three-post/UnrealBloomPass.js"></script>
+<script src="lib/mqtt.min.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
